@@ -34,7 +34,8 @@ app.use(express.json())
 
 app.get('/api/robots', (req, res) => {
     try {
-        res.status(200).send(botsArr)
+        res.status(200).send(bots)
+        rollbar.info('total bots should appear')
     } catch (error) {
         console.log('ERROR GETTING BOTS', error)
         res.sendStatus(400)
@@ -47,6 +48,7 @@ app.get('/api/robots/five', (req, res) => {
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
         res.status(200).send({choices, compDuo})
+        rollbar.info('shuffled bots should appear')
     } catch (error) {
         console.log('ERROR GETTING FIVE BOTS', error)
         res.sendStatus(400)
@@ -73,10 +75,10 @@ app.post('/api/duel', (req, res) => {
         // comparing the total health to determine a winner
         if (compHealthAfterAttack > playerHealthAfterAttack) {
             playerRecord.losses++
-            //rollbar.info('player losses should increment')
+            rollbar.info('player losses should increment')
             res.status(200).send('You lost!')
         } else {
-            playerRecord.losses++;
+            playerRecord.wins++;
             rollbar.info('player wins should increment')
             res.status(200).send('You won!')
         }
